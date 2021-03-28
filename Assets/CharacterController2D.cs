@@ -4,29 +4,40 @@ using UnityEngine;
 
 public class CharacterController2D : MonoBehaviour
 {
+    [SerializeField]
+    private LayerMask _groundLayerMask;
     Rigidbody2D _rb;
-    public Vector2 _speed = new Vector2(1, 1);
+    CapsuleCollider2D _capsuleCollider2d;
+    public Vector2 _speed = new Vector2(5, 5);
     public float _jumpForce = 2;
+    public float _dashSpeed = 5;
     public Animator _animator;
     private float _inputX = 0f;
-    private bool _onGrounded = true;
     private bool _isAttacking = false;
     private bool _isRolling = false;
     private bool _isFaceRight = true;
+    private bool _isGrabbing = false;
+
     // Start is called before the first frame update
     void Start()
     {
         _rb = GetComponent<Rigidbody2D>();
         _animator = GetComponent<Animator>();
+        _capsuleCollider2d = GetComponent<CapsuleCollider2D>();
+        _groundLayerMask = LayerMask.GetMask("Ground");
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         Movement();
+        Attack();
+    }
+    void Update()
+    {
         Jump();
         Roll();
-        Attack();
+        //Dash();
     }
     public void Movement()
     {
@@ -34,7 +45,7 @@ public class CharacterController2D : MonoBehaviour
         _inputX = Input.GetAxis("Horizontal");
 
         _animator.SetFloat("speedX", Mathf.Abs(_inputX));
-        if (_inputX != 0 && (!_isAttacking || !_onGrounded) && !_isRolling)
+        if (_inputX != 0 && (!_isAttacking || isGrounded()) && !_isRolling)
         {
             // creating movement vector
             Vector3 movement = new Vector3(_speed.x * _inputX, 0, 0);
@@ -51,17 +62,18 @@ public class CharacterController2D : MonoBehaviour
     private void Jump()
     {
         // Jump movement
-        if (Input.GetButtonDown("Jump") && _onGrounded && !_isRolling)
+        if ((isGrounded() && Input.GetButtonDown("Jump") && !_isRolling))
         {
             _animator.SetBool("isJumping", true);
-            _rb.AddForce(new Vector2(0, _jumpForce), ForceMode2D.Impulse);
+
+            _rb.velocity = new Vector3(0, _jumpForce, 0);
             // this is for jump animation if it on air
             _animator.SetFloat("speedX", 0);
         }
     }
     private void Roll()
     {
-        if (Input.GetButtonDown("Roll") && _onGrounded && Mathf.Abs(_inputX) > 0)
+        if (Input.GetButtonDown("Roll") && isGrounded() && Mathf.Abs(_inputX) > 0)
         {
             _isRolling = true;
             _animator.SetTrigger("roll");
@@ -92,19 +104,54 @@ public class CharacterController2D : MonoBehaviour
     {
         _rb.AddForce(new Vector2(_isFaceRight ? 5f : -5f, 0), ForceMode2D.Impulse);
     }
-    private void OnCollisionEnter2D(Collision2D collision)
+    //private void Dash()
+    //{
+    //    if (Input.GetKeyDown(KeyCode.X))
+    //    {
+    //        if (_inputX > 0)
+    //        {
+    //            _rb.velocity = Vector2.right * _dashSpeed;
+    //        }
+    //        else if (_inputX < 0)
+    //        {
+    //          _rb.velocity = Vector2.left * _dashSpeed;
+
+    //        }            
+    //    }
+    //}
+    private bool isGrounded()
     {
-        if (collision.gameObject.layer == 6 && !_onGrounded)
+        float extraHeightText = 0.2f;
+        RaycastHit2D raycastHit = Physics2D.BoxCast(_capsuleCollider2d.bounds.center, _capsuleCollider2d.bounds.size, 0f, Vector2.down, extraHeightText, _groundLayerMask);
+        RaycastHit2D grabCastHit = Physics2D.BoxCast(_capsuleCollider2d.bounds.center, _capsuleCollider2d.bounds.size, _isFaceRight ? 90f : -90f, Vector2.left, extraHeightText, _groundLayerMask);
+        Debug.Log(grabCastHit.collider);
+        Color rayColor;
+        if (raycastHit.collider != null || grabCastHit.collider != null)
+        {
+            rayColor = Color.green;
+        }
+        else
+        {
+            rayColor = Color.red;
+        }
+
+        if (grabCastHit.collider != null)
+        {
+            _isGrabbing = true;
+        }
+        else
+        {
+            _isGrabbing = false;
+        }
+
+        Debug.DrawRay(_capsuleCollider2d.bounds.center, new Vector3(_isFaceRight ? .75f : -.75f, 0, 0), rayColor);
+        Debug.DrawRay(_capsuleCollider2d.bounds.center + new Vector3(_capsuleCollider2d.bounds.extents.x, 0), Vector2.down * (_capsuleCollider2d.bounds.extents.y + extraHeightText), rayColor);
+        Debug.DrawRay(_capsuleCollider2d.bounds.center - new Vector3(_capsuleCollider2d.bounds.extents.x, 0), Vector2.down * (_capsuleCollider2d.bounds.extents.y + extraHeightText), rayColor);
+        Debug.DrawRay(_capsuleCollider2d.bounds.center - new Vector3(_capsuleCollider2d.bounds.extents.x, _capsuleCollider2d.bounds.extents.y + extraHeightText), Vector2.right * (_capsuleCollider2d.bounds.extents.x), rayColor);
+        if (raycastHit.collider != null && Mathf.Abs(_rb.velocity.y) == 0)
         {
             _animator.SetBool("isJumping", false);
-            _onGrounded = true;
         }
-    }
-    private void OnCollisionExit2D(Collision2D collision)
-    {
-        if (collision.gameObject.layer == 6)
-        {
-            _onGrounded = false;
-        }
+        return (raycastHit.collider != null || grabCastHit.collider != null);
     }
 }
