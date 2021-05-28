@@ -24,7 +24,15 @@ public class GroundDetectionEnemy : MonoBehaviour
     {
         if (collision.gameObject.layer == 6)
         {
-            enemyScript._isFaceRight = !enemyScript._isFaceRight;
+            enemyScript.setNoWayToGo(true);
+            enemyScript.setFaceRight(!enemyScript.getFaceRight());
+        }
+    }
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.layer == 6)
+        {
+            enemyScript.setNoWayToGo(false);
         }
     }
 }

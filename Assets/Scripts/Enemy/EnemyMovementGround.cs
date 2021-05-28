@@ -10,7 +10,7 @@ public class EnemyMovementGround : MonoBehaviour
     private GameObject player;
     Rigidbody2D _rb;
     public Vector2 _speed = new Vector2(1, 0);
-    public int characterSize = 1;
+    public float characterSize = 1;
     public Animator _animator;
     private bool _isAttacking = false;
     private bool _isChasing = false;
@@ -18,12 +18,12 @@ public class EnemyMovementGround : MonoBehaviour
     private bool _nearEnemy = false;
     private bool _isTakingHit = false;
     private bool _isBlockState = false;
+    private bool _isNoWayToGo = false;
 
     // Start is called before the first frame update
     void Start()
     {
         _rb = GetComponent<Rigidbody2D>();
-
     }
 
 
@@ -59,14 +59,15 @@ public class EnemyMovementGround : MonoBehaviour
 
     public void Chase()
     {
-        if (!_isAttacking && !_isTakingHit && _isChasing && (transform.position.x != player.transform.position.x))
+        Debug.Log(_isTakingHit);
+        if (!_isAttacking && !_isTakingHit && _isChasing && (transform.position.x != player.transform.position.x) && !_isNoWayToGo)
         {
             _rb.velocity = new Vector2(0, 0);
             _animator.SetFloat("speedX", 1);
             transform.localScale = new Vector3(_isFaceRight == false ? (-characterSize) : characterSize, characterSize, characterSize);
             transform.position = Vector2.MoveTowards(transform.position, new Vector2(player.transform.position.x, transform.position.y), 1f * Time.deltaTime);
         }
-        else if (_isChasing && transform.position.x == player.transform.position.x)
+        else if (_isChasing && (transform.position.x == player.transform.position.x || _isNoWayToGo))
         {
             _animator.SetFloat("speedX", 0);
         }
@@ -76,7 +77,6 @@ public class EnemyMovementGround : MonoBehaviour
     {
         if (_isChasing || _isAttacking)
         {
-            Debug.Log(123);
             if (transform.position.x > player.transform.position.x && _isFaceRight)
             {
                 _isFaceRight = !_isFaceRight;
@@ -99,19 +99,20 @@ public class EnemyMovementGround : MonoBehaviour
             Debug.DrawRay(new Vector2(transform.position.x + (_isFaceRight ? 1f : -1f), transform.position.y), (_isFaceRight ? Vector2.right : Vector2.left) * 10f, Color.green);
             if (hit.collider != null && hit.collider.gameObject.layer == 9)
             {
-                this._isChasing = true;
+                _isChasing = true;
             }
         }
     }
 
     public void AE_TakingDamage()
     {
-        this._isChasing = true;
-        this._isTakingHit = true;
+        _isChasing = true;
+        _isTakingHit = true;
     }
     public void AE_TakingDamageFinished()
     {
-        this._isTakingHit = false;
+        _isTakingHit = false;
+        _isAttacking = false;
     }
 
     public void AE_AttackStarted()
@@ -122,9 +123,9 @@ public class EnemyMovementGround : MonoBehaviour
     }
     public void AE_AttackFinished()
     {
+        Debug.Log(123123);
         _isAttacking = false;
     }
-
 
     public bool getAttacking()
     {
@@ -157,6 +158,18 @@ public class EnemyMovementGround : MonoBehaviour
         if (_isChasing != isChasing)
         {
             _isChasing = isChasing;
+        }
+    }
+
+    public bool getNoWayToGo()
+    {
+        return _isNoWayToGo;
+    }
+    public void setNoWayToGo(bool isNoWayToGo)
+    {
+        if (_isNoWayToGo != isNoWayToGo)
+        {
+            _isNoWayToGo = isNoWayToGo;
         }
     }
 }

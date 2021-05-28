@@ -12,7 +12,7 @@ public class EnemyAttackKnight : MonoBehaviour
     public int _attackDamage = 10;
 
     private int _currentAttack = 0;
-    private float _timeSinceAttack = 0.0f;
+    private float _timeSinceAttack = 1f;
 
     [SerializeField]
     private GameObject player;

@@ -10,9 +10,10 @@ public class EnemyAttackArcher : MonoBehaviour
     public float _attackRange = 0.5f;
     public LayerMask _playerLayer;
     public int _attackDamage = 10;
+    public GameObject _arrow;
+    public float _arrowSpeed = 2f;
 
-    private int _currentAttack = 0;
-    private float _timeSinceAttack = 0.0f;
+    private float _timeSinceAttack = 2f;
 
     [SerializeField]
     private GameObject player;
@@ -36,29 +37,43 @@ public class EnemyAttackArcher : MonoBehaviour
     {
         enemyScript.LookPlayer();
         // attack animation
-        if (_timeSinceAttack > 1f && enemyScript.getChasing())
+        if (_timeSinceAttack > 2f && enemyScript.getChasing())
         {
-            
-            Debug.Log(enemyScript.getFaceRight());
-            RaycastHit2D hit = Physics2D.Raycast(new Vector2(transform.position.x + (enemyScript.getFaceRight() ? 1f : -1f), transform.position.y), (enemyScript.getFaceRight() ? Vector2.right : Vector2.left), 10f);
-            Debug.DrawRay(new Vector2(transform.position.x + (enemyScript.getFaceRight() ? 1f : -1f), transform.position.y), (enemyScript.getFaceRight() ? Vector2.right : Vector2.left) * 10f, Color.green);
-            if (hit.collider != null && hit.collider.gameObject.layer == 9)
+            RaycastHit2D[] hit = Physics2D.RaycastAll(new Vector2(transform.position.x + (enemyScript.getFaceRight() ? 0.1f : -0.1f), transform.position.y), (enemyScript.getFaceRight() ? Vector2.right : Vector2.left), 10f);
+            Debug.DrawRay(new Vector2(transform.position.x + (enemyScript.getFaceRight() ? 0.1f : -0.1f), transform.position.y), (enemyScript.getFaceRight() ? Vector2.right : Vector2.left) * 10f, Color.green);
+            foreach (RaycastHit2D rays in hit)
             {
-                _animator.SetFloat("speedX", 0);
-                _animator.SetTrigger("Attack");
-                if (!enemyScript.getAttacking())
+                if (rays.collider != null && rays.collider.gameObject.layer == 9)
                 {
-                    enemyScript.setAttacking(true);
+                    _animator.SetFloat("speedX", 0);
+                    _animator.SetTrigger("Attack");
+                    if (!enemyScript.getAttacking())
+                    {
+                        enemyScript.setAttacking(true);
+                    }
                 }
-                _timeSinceAttack = 0;
-            } else
-            {
-                if (enemyScript.getAttacking())
+                else
                 {
-                    enemyScript.setAttacking(false);
+                    if (enemyScript.getAttacking())
+                    {
+                        enemyScript.setAttacking(false);
+                    }
                 }
             }
+
+            _timeSinceAttack = 0;
         }
+    }
+
+    private void ShotArrow()
+    {
+        //Creating Arrow
+        float x = transform.position.x + (enemyScript.getFaceRight() ? 0.4f : -0.4f);
+        float y = transform.position.y - 0.22f;
+        GameObject arrow = Instantiate(_arrow, new Vector2(x, y), Quaternion.identity);
+        arrow.transform.localScale = new Vector3(enemyScript.getFaceRight() ? 0.1f : -0.1f, 0.1f, 0.1f);
+        arrow.GetComponent<Rigidbody2D>().velocity = new Vector2(enemyScript.getFaceRight() ? _arrowSpeed : -_arrowSpeed, 0f);
+
     }
 
     private void AE_CheckHit()

@@ -121,13 +121,7 @@ public class CharacterController2D : MonoBehaviour
 
             // Call one of three attack animations "Attack1", "Attack2", "Attack3"
             _animator.SetTrigger("Attack" + _currentAttack);
-            Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(_attackPoint.position, _attackRange, _enemyLayer);
 
-            foreach (Collider2D enemy in hitEnemies)
-            {
-                Debug.Log(1);
-                enemy.GetComponent<HealthScript>().TakeDamage(_attackDamage);
-            }
             // Reset timer
             _timeSinceAttack = 0.0f;
         }
@@ -237,6 +231,16 @@ public class CharacterController2D : MonoBehaviour
     // Animation Events
     private void AE_ResetRoll()
     {
+        // TODO rollda hit yediðinde donma sorunu
         _isRolling = false;
+    }
+    private void AE_CheckHit()
+    {
+        Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(_attackPoint.position, _attackRange, _enemyLayer);
+
+        foreach (Collider2D enemy in hitEnemies)
+        {
+            enemy.GetComponent<HealthScript>().TakeDamage(_attackDamage);
+        }
     }
 }
