@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 1908095282018268301}
   - component: {fileID: 8823793556735156512}
   - component: {fileID: 430036816617568347}
-  m_Layer: 8
+  m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -198,7 +198,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1647066275042819645}
-  m_Layer: 8
+  m_Layer: 0
   m_Name: HealtBarPos
   m_TagString: Untagged
   m_Icon: {fileID: 0}

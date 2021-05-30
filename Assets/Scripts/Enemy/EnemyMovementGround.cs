@@ -122,7 +122,11 @@ public class EnemyMovementGround : MonoBehaviour
     {
         _isAttacking = true;
         _isChasing = true;
-        _rb.velocity = new Vector2(0, 0);
+        if (enabled)
+        {
+            _rb.velocity = new Vector2(0, 0);
+
+        }
     }
     public void AE_AttackFinished()
     {

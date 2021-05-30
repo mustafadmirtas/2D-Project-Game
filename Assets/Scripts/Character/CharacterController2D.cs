@@ -29,6 +29,8 @@ public class CharacterController2D : MonoBehaviour
     public LayerMask _enemyLayer;
     public int _attackDamage = 10;
 
+    [Header("Load Settings")]
+    public GameObject _camera;
     public bool _isLoaded = false;
     private GameObject[] gos;
     private List<GameObject> goList;
@@ -264,14 +266,15 @@ public class CharacterController2D : MonoBehaviour
     }
 
     public void SavePlayer()
-    {  
-        SaveLoad.SaveData(gameObject, findEnemies());
+    {
+        SaveLoad.SaveData(gameObject, findEnemies(), _camera);
     }
 
     private List<GameObject> findEnemies()
     {
-        
-        gos = FindObjectsOfType(typeof(GameObject)) as GameObject[];
+
+        gos = Resources.FindObjectsOfTypeAll(typeof(GameObject)) as GameObject[];
+        goList = new List<GameObject>();
         foreach (GameObject go in gos)
         {
             if (go.layer == 8)
@@ -289,5 +292,30 @@ public class CharacterController2D : MonoBehaviour
         Vector3 pos = new Vector3(data.position[0], data.position[1], data.position[2]);
         _attackDamage = data.damage;
         transform.position = pos;
+
+        Vector3 campos = new Vector3(data.cameraPos[0], data.cameraPos[1], data.cameraPos[2]);
+        _camera.transform.position = campos;
+        LoadEnemies(data);
+    }
+
+    private void LoadEnemies(PlayerData data)
+    {
+        List<GameObject> enemies = findEnemies();
+        Debug.Log(enemies.Count);
+
+        for (int i = 0; i < enemies.Count; i++)
+        {
+            enemies[i].GetComponent<HealthScript>().enabled = data.healthEnabled[i];
+            if (data.healthEnabled[i])
+            {
+                enemies[i].GetComponent<HealthScript>().setHealth(data.enemyHealths[i]);
+                Vector3 pos = new Vector3(data.enemyPos[i][0], data.enemyPos[i][1], data.enemyPos[i][2]);
+                enemies[i].transform.position = pos;
+            }
+            else
+            {
+                enemies[i].SetActive(false);
+            }
+        }
     }
 }
