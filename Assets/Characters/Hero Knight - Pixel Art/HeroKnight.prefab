@@ -249,6 +249,7 @@ MonoBehaviour:
   _rollForce: 5
   _dashSpeed: 5
   _animator: {fileID: 2655505060201611074}
+  _isBlockState: 0
   _attackPoint: {fileID: 1943143378896865415}
   _attackRange: 0.5
   _enemyLayer:

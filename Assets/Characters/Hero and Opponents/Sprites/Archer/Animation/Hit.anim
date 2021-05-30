@@ -83,7 +83,7 @@ AnimationClip:
     intParameter: 0
     messageOptions: 0
   - time: 0.016666668
-    functionName: AE_TakingDamageFinished
+    functionName: AE_TakingDamageFinishedArcher
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0

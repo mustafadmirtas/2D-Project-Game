@@ -24,8 +24,15 @@ public class WallDetectorEnemy : MonoBehaviour
     {
         if (collision.gameObject.layer == 6)
         {
+            enemyScript.setNoWayToGo(true);
             enemyScript.setFaceRight(!enemyScript.getFaceRight());
         }
     }
-
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.gameObject.layer == 6)
+        {
+            enemyScript.setNoWayToGo(false);
+        }
+    }
 }

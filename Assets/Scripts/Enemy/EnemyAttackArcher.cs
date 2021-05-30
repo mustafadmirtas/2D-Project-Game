@@ -40,7 +40,7 @@ public class EnemyAttackArcher : MonoBehaviour
         if (_timeSinceAttack > 2f && enemyScript.getChasing())
         {
             RaycastHit2D[] hit = Physics2D.RaycastAll(new Vector2(transform.position.x + (enemyScript.getFaceRight() ? 0.1f : -0.1f), transform.position.y), (enemyScript.getFaceRight() ? Vector2.right : Vector2.left), 10f);
-            Debug.DrawRay(new Vector2(transform.position.x + (enemyScript.getFaceRight() ? 0.1f : -0.1f), transform.position.y), (enemyScript.getFaceRight() ? Vector2.right : Vector2.left) * 10f, Color.green);
+            Debug.DrawRay(new Vector2(transform.position.x + (enemyScript.getFaceRight() ? 0.1f : -0.1f), transform.position.y - 0.3f), (enemyScript.getFaceRight() ? Vector2.right : Vector2.left) * 10f, Color.green);
             foreach (RaycastHit2D rays in hit)
             {
                 if (rays.collider != null && rays.collider.gameObject.layer == 9)
@@ -50,13 +50,6 @@ public class EnemyAttackArcher : MonoBehaviour
                     if (!enemyScript.getAttacking())
                     {
                         enemyScript.setAttacking(true);
-                    }
-                }
-                else
-                {
-                    if (enemyScript.getAttacking())
-                    {
-                        enemyScript.setAttacking(false);
                     }
                 }
             }

@@ -101,16 +101,22 @@ public class EnemyBossAttack : MonoBehaviour
 
         foreach (Collider2D enemy in hitEnemies)
         {
-            player.GetComponent<HealthScript>().TakeDamage(_attackDamage);
+            if (player.GetComponent<CharacterController2D>()._isBlockState && enemyScript.getFaceRight() != player.GetComponent<CharacterController2D>().getFaceRight())
+            {
+                player.GetComponent<HealthScript>().TakeDamage(_attackDamage);
+            } else
+            {
+
+            }
         }
     }
     private void AE_FixDeathAnimation()
-    {       
+    {
         transform.position = new Vector2(transform.position.x, transform.position.y + 0.38f);
     }
     private void OnTriggerStay2D(Collider2D collision)
     {
-        if (collision.gameObject.layer == 9 && this.enabled == true)
+        if (collision.gameObject.layer == 9 && this.enabled == true && !_isJumpAttack)
         {
             Attack();
         }

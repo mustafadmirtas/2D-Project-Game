@@ -21,7 +21,7 @@ public class CharacterController2D : MonoBehaviour
     private int _currentAttack = 0;
     private float _timeSinceAttack = 0.0f;
     private bool _isClimbing = false;
-    private bool _isBlockState = false;
+    public bool _isBlockState = false;
 
     [Header("Attack Settings")]
     public Transform _attackPoint;
@@ -29,6 +29,9 @@ public class CharacterController2D : MonoBehaviour
     public LayerMask _enemyLayer;
     public int _attackDamage = 10;
 
+    public bool _isLoaded = false;
+    private GameObject[] gos;
+    private List<GameObject> goList;
     // Start is called before the first frame update
     void Start()
     {
@@ -36,6 +39,10 @@ public class CharacterController2D : MonoBehaviour
         _animator = GetComponent<Animator>();
         _capsuleCollider2D = GetComponent<CapsuleCollider2D>();
         _groundLayerMask = LayerMask.GetMask("Ground");
+        if (PlayerPrefs.GetInt("Loaded") == 1)
+        {
+            LoadPlayer();
+        }
     }
 
     // Update is called once per frame
@@ -51,7 +58,7 @@ public class CharacterController2D : MonoBehaviour
         Roll();
         Attack();
         Block();
-        //Dash();
+        Dash();
     }
     public void Movement()
     {
@@ -131,31 +138,31 @@ public class CharacterController2D : MonoBehaviour
     {
         if (Input.GetButtonDown("Block"))
         {
-            this._isBlockState = true;
+            _isBlockState = true;
             _animator.SetBool("IdleBlock", true);
         }
         if (Input.GetButtonUp("Block"))
         {
-            this._isBlockState = false;
+            _isBlockState = false;
             _animator.SetBool("IdleBlock", false);
         }
     }
 
-    //private void Dash()
-    //{
-    //    if (Input.GetKeyDown(KeyCode.X))
-    //    {
-    //        if (_inputX > 0)
-    //        {
-    //            _rb.velocity = Vector2.right * _dashSpeed;
-    //        }
-    //        else if (_inputX < 0)
-    //        {
-    //          _rb.velocity = Vector2.left * _dashSpeed;
+    private void Dash()
+    {
+        if (Input.GetKeyDown(KeyCode.X))
+        {
+            if (_inputX > 0)
+            {
+                _rb.velocity = Vector2.right * _dashSpeed;
+            }
+            else if (_inputX < 0)
+            {
+                _rb.velocity = Vector2.left * _dashSpeed;
 
-    //        }            
-    //    }
-    //}
+            }
+        }
+    }
     private bool isGrounded()
     {
         float extraHeightText = 0.2f;
@@ -242,5 +249,45 @@ public class CharacterController2D : MonoBehaviour
         {
             enemy.GetComponent<HealthScript>().TakeDamage(_attackDamage);
         }
+    }
+
+    public bool getFaceRight()
+    {
+        return _isFaceRight;
+    }
+    public void setFaceRight(bool isFaceRight)
+    {
+        if (_isFaceRight != isFaceRight)
+        {
+            _isFaceRight = isFaceRight;
+        }
+    }
+
+    public void SavePlayer()
+    {  
+        SaveLoad.SaveData(gameObject, findEnemies());
+    }
+
+    private List<GameObject> findEnemies()
+    {
+        
+        gos = FindObjectsOfType(typeof(GameObject)) as GameObject[];
+        foreach (GameObject go in gos)
+        {
+            if (go.layer == 8)
+            {
+                goList.Add(go);
+            }
+        }
+        return goList;
+    }
+
+    public void LoadPlayer()
+    {
+        PlayerData data = SaveLoad.LoadData();
+        GetComponent<HealthScript>().setHealth(data.health);
+        Vector3 pos = new Vector3(data.position[0], data.position[1], data.position[2]);
+        _attackDamage = data.damage;
+        transform.position = pos;
     }
 }

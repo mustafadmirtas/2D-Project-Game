@@ -10,7 +10,7 @@ public class EnemyMovementGround : MonoBehaviour
     private GameObject player;
     Rigidbody2D _rb;
     public Vector2 _speed = new Vector2(1, 0);
-    public float characterSize = 1;
+    public float characterSize = 2.2f;
     public Animator _animator;
     private bool _isAttacking = false;
     private bool _isChasing = false;
@@ -59,7 +59,6 @@ public class EnemyMovementGround : MonoBehaviour
 
     public void Chase()
     {
-        Debug.Log(_isTakingHit);
         if (!_isAttacking && !_isTakingHit && _isChasing && (transform.position.x != player.transform.position.x) && !_isNoWayToGo)
         {
             _rb.velocity = new Vector2(0, 0);
@@ -96,7 +95,7 @@ public class EnemyMovementGround : MonoBehaviour
         if (!_isChasing)
         {
             RaycastHit2D hit = Physics2D.Raycast(new Vector2(transform.position.x + (_isFaceRight ? 1f : -1f), transform.position.y), (_isFaceRight ? Vector2.right : Vector2.left), 10f);
-            Debug.DrawRay(new Vector2(transform.position.x + (_isFaceRight ? 1f : -1f), transform.position.y), (_isFaceRight ? Vector2.right : Vector2.left) * 10f, Color.green);
+            Debug.DrawRay(new Vector2(transform.position.x + (_isFaceRight ? 1f : -1f), transform.position.y - (characterSize > 2.2f ? 0.3f : 0)), (_isFaceRight ? Vector2.right : Vector2.left) * 10f, Color.green);
             if (hit.collider != null && hit.collider.gameObject.layer == 9)
             {
                 _isChasing = true;
@@ -114,6 +113,10 @@ public class EnemyMovementGround : MonoBehaviour
         _isTakingHit = false;
         _isAttacking = false;
     }
+    public void AE_TakingDamageFinishedArcher()
+    {
+        _isTakingHit = false;
+    }
 
     public void AE_AttackStarted()
     {
@@ -123,7 +126,6 @@ public class EnemyMovementGround : MonoBehaviour
     }
     public void AE_AttackFinished()
     {
-        Debug.Log(123123);
         _isAttacking = false;
     }
 
