@@ -34,6 +34,8 @@ public class CharacterController2D : MonoBehaviour
     public bool _isLoaded = false;
     private GameObject[] gos;
     private List<GameObject> goList;
+
+    public GameObject inGameCanvas;
     // Start is called before the first frame update
     void Start()
     {
@@ -55,12 +57,16 @@ public class CharacterController2D : MonoBehaviour
     }
     void Update()
     {
-        _timeSinceAttack += Time.deltaTime;
-        Jump();
-        Roll();
-        Attack();
-        Block();
-        Dash();
+        if (Time.timeScale > 0)
+        {
+            _timeSinceAttack += Time.deltaTime;
+            Jump();
+            Roll();
+            Attack();
+            Block();
+            Dash();
+        }
+        PauseOrPlayGame(false);
     }
     public void Movement()
     {
@@ -296,6 +302,7 @@ public class CharacterController2D : MonoBehaviour
         Vector3 campos = new Vector3(data.cameraPos[0], data.cameraPos[1], data.cameraPos[2]);
         _camera.transform.position = campos;
         LoadEnemies(data);
+        PauseOrPlayGame(true);
     }
 
     private void LoadEnemies(PlayerData data)
@@ -315,6 +322,23 @@ public class CharacterController2D : MonoBehaviour
             else
             {
                 enemies[i].SetActive(false);
+            }
+        }
+    }
+
+    public void PauseOrPlayGame(bool comeback)
+    {
+        if (Input.GetButtonDown("Pause") || comeback)
+        {
+            if (inGameCanvas.activeSelf == true)
+            {
+                inGameCanvas.SetActive(false);
+                Time.timeScale = 1;
+            }
+            else
+            {
+                inGameCanvas.SetActive(true);
+                Time.timeScale = 0;
             }
         }
     }

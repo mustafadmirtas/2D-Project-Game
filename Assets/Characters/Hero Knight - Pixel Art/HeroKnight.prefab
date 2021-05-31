@@ -115,6 +115,7 @@ GameObject:
   - component: {fileID: 8942925490989933264}
   - component: {fileID: 1065681490066407400}
   - component: {fileID: 5246254945592018458}
+  - component: {fileID: 7512713036972998997}
   m_Layer: 0
   m_Name: HeroKnight
   m_TagString: Player
@@ -224,7 +225,7 @@ Rigidbody2D:
   m_LinearDrag: 0.5
   m_AngularDrag: 0.05
   m_GravityScale: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: 507eb6b4eb2bd2547ab8b88efc27ec5a, type: 2}
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 1
@@ -244,7 +245,7 @@ MonoBehaviour:
   _groundLayerMask:
     serializedVersion: 2
     m_Bits: 64
-  _speed: {x: 1, y: 1}
+  _speed: {x: 5, y: 5}
   _jumpForce: 5
   _rollForce: 5
   _dashSpeed: 5
@@ -254,8 +255,11 @@ MonoBehaviour:
   _attackRange: 0.5
   _enemyLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 256
   _attackDamage: 10
+  _camera: {fileID: 0}
+  _isLoaded: 0
+  inGameCanvas: {fileID: 0}
 --- !u!70 &5246254945592018458
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -269,6 +273,23 @@ CapsuleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.045477867, y: 0.691934}
-  m_Size: {x: 0.8428407, y: 1.2852156}
+  m_Offset: {x: 0.018651247, y: 0.691934}
+  m_Size: {x: 0.9710989, y: 1.2852156}
   m_Direction: 0
+--- !u!114 &7512713036972998997
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6323719953710832613}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e1166285c83123c478e8b05fcce9386c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _maxHealth: 100
+  _animator: {fileID: 2655505060201611074}
+  slider: {fileID: 0}
+  healtBarPos: {fileID: 0}
+  healthBar: {fileID: 0}

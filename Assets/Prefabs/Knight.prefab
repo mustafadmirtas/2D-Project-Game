@@ -127,9 +127,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _maxHealth: 100
   _animator: {fileID: 3432456927493282029}
-  slider: {fileID: 0}
-  healtBarPos: {fileID: 0}
-  healthBar: {fileID: 0}
+  slider: {fileID: 6499796083432058915}
+  healtBarPos: {fileID: 3566525503815904537}
+  healthBar: {fileID: 8133970200948588764}
 --- !u!114 &3432456927493282022
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -147,7 +147,7 @@ MonoBehaviour:
     m_Bits: 64
   player: {fileID: 0}
   _speed: {x: 1, y: 0}
-  characterSize: 1
+  characterSize: 4
   _animator: {fileID: 3432456927493282029}
   _isFaceRight: 1
 --- !u!50 &3432456927493282023
@@ -205,9 +205,9 @@ CircleCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.020564675, y: 0.020289093}
+  m_Offset: {x: 0.02298373, y: 0.020289093}
   serializedVersion: 2
-  m_Radius: 0.096162915
+  m_Radius: 0.09858197
 --- !u!70 &761821772430413883
 CapsuleCollider2D:
   m_ObjectHideFlags: 0

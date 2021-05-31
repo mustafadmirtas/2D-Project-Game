@@ -433,7 +433,7 @@ MonoBehaviour:
   _playerLayer:
     serializedVersion: 2
     m_Bits: 512
-  _attackDamage: 20
+  _attackDamage: 15
   _jumpAttackRange: 3
   _jumpAttackRangeMin: 2
   _xForce: 150

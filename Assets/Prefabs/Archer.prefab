@@ -295,9 +295,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _maxHealth: 100
   _animator: {fileID: 4271406015456683470}
-  slider: {fileID: 0}
-  healtBarPos: {fileID: 0}
-  healthBar: {fileID: 0}
+  slider: {fileID: 3225026176531046860}
+  healtBarPos: {fileID: 5037820729297100772}
+  healthBar: {fileID: 2567771644168741438}
 --- !u!50 &4271406015456683464
 Rigidbody2D:
   serializedVersion: 4
