@@ -14,6 +14,7 @@ public class EnemyAttackArcher : MonoBehaviour
     public float _arrowSpeed = 2f;
 
     private float _timeSinceAttack = 2f;
+    private SoundManager soundManager;
 
     [SerializeField]
     private GameObject player;
@@ -24,6 +25,7 @@ public class EnemyAttackArcher : MonoBehaviour
     void Start()
     {
         enemyScript = enemy.GetComponent<EnemyMovementGround>();
+        soundManager = GameObject.FindGameObjectWithTag("SoundManager").GetComponent<SoundManager>();
     }
 
     // Update is called once per frame

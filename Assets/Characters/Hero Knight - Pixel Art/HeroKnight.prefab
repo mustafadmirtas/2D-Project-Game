@@ -260,6 +260,11 @@ MonoBehaviour:
   _camera: {fileID: 0}
   _isLoaded: 0
   inGameCanvas: {fileID: 0}
+  _potionCount: 3
+  _potionCountText: {fileID: 0}
+  potionTextureEmpty: {fileID: 21300000, guid: 914c1681210c4574496d356ae385c975, type: 3}
+  potionTextureFill: {fileID: -6883939170787372506, guid: 144c3521ede3ec54e87afcca9f254133, type: 3}
+  potion: {fileID: 0}
 --- !u!70 &5246254945592018458
 CapsuleCollider2D:
   m_ObjectHideFlags: 0

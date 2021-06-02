@@ -8,6 +8,8 @@ public class PlayerData
     public int level = 0;
     public int health;
     public int damage = 10;
+    public int potionCount = 0;
+    public int stealCount = 0;
     public float[] position = { 0, 0, 0 };
     public float[] cameraPos = { 0, 0, 0 };
 
@@ -19,6 +21,8 @@ public class PlayerData
     {
         health = character.GetComponent<HealthScript>().getHealth();
         damage = character.GetComponent<CharacterController2D>()._attackDamage;
+        potionCount = character.GetComponent<CharacterController2D>()._potionCount;
+        stealCount = character.GetComponent<CharacterController2D>()._healthSteal;
         position[0] = character.transform.position.x;
         position[1] = character.transform.position.y;
         position[2] = character.transform.position.z;

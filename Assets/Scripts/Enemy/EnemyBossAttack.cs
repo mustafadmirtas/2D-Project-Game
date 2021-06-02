@@ -25,6 +25,7 @@ public class EnemyBossAttack : MonoBehaviour
     private bool _isJumpAttack = false;
     private bool _isDogding = false;
 
+    private SoundManager soundManager;
     [SerializeField]
     private GameObject player;
     [SerializeField]
@@ -35,6 +36,7 @@ public class EnemyBossAttack : MonoBehaviour
     {
         enemyScript = enemy.GetComponent<EnemyMovementGround>();
         _rb = GetComponent<Rigidbody2D>();
+        soundManager = GameObject.FindGameObjectWithTag("SoundManager").GetComponent<SoundManager>();
     }
 
     // Update is called once per frame
@@ -101,15 +103,22 @@ public class EnemyBossAttack : MonoBehaviour
 
         foreach (Collider2D enemy in hitEnemies)
         {
-            if (player.GetComponent<CharacterController2D>()._isBlockState && enemyScript.getFaceRight() != player.GetComponent<CharacterController2D>().getFaceRight())
+            if (!player.GetComponent<CharacterController2D>()._isBlockState || enemyScript.getFaceRight() == player.GetComponent<CharacterController2D>().getFaceRight())
             {
                 player.GetComponent<HealthScript>().TakeDamage(_attackDamage);
+                soundManager.PlaySound("SFX_Hit3");
             } else
             {
 
             }
         }
     }
+
+    public void swingSounds(int i)
+    {
+        soundManager.PlaySound("SFX_Swing" + i);
+    }
+
     private void AE_FixDeathAnimation()
     {
         transform.position = new Vector2(transform.position.x, transform.position.y + 0.38f);

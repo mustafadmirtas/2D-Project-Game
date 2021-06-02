@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
 
 public class CharacterController2D : MonoBehaviour
 {
@@ -10,7 +12,7 @@ public class CharacterController2D : MonoBehaviour
     CapsuleCollider2D _capsuleCollider2D;
     public Vector2 _speed = new Vector2(1, 1);
     public float _jumpForce = 5;
-    public float _rollForce = 5;
+    public float _rollForce = 7.5f;
     public float _dashSpeed = 5;
     public Animator _animator;
     private float _inputX = 0f;
@@ -22,6 +24,7 @@ public class CharacterController2D : MonoBehaviour
     private float _timeSinceAttack = 0.0f;
     private bool _isClimbing = false;
     public bool _isBlockState = false;
+    public int _healthSteal = 0;
 
     [Header("Attack Settings")]
     public Transform _attackPoint;
@@ -34,8 +37,16 @@ public class CharacterController2D : MonoBehaviour
     public bool _isLoaded = false;
     private GameObject[] gos;
     private List<GameObject> goList;
-
+    private SoundManager soundManager;
     public GameObject inGameCanvas;
+
+    [Header("Potion")]
+    public int _potionCount = 3;
+    public TextMeshProUGUI _potionCountText;
+    public Sprite potionTextureEmpty;
+    public Sprite potionTextureFill;
+    public GameObject potion;
+    
     // Start is called before the first frame update
     void Start()
     {
@@ -47,6 +58,8 @@ public class CharacterController2D : MonoBehaviour
         {
             LoadPlayer();
         }
+        _potionCountText.text = ""+_potionCount;
+        soundManager = GameObject.FindGameObjectWithTag("SoundManager").GetComponent<SoundManager>();
     }
 
     // Update is called once per frame
@@ -65,6 +78,7 @@ public class CharacterController2D : MonoBehaviour
             Attack();
             Block();
             Dash();
+            DrinkPotion();
         }
         PauseOrPlayGame(false);
     }
@@ -155,21 +169,45 @@ public class CharacterController2D : MonoBehaviour
             _animator.SetBool("IdleBlock", false);
         }
     }
-
-    private void Dash()
+    private void DrinkPotion()
     {
-        if (Input.GetKeyDown(KeyCode.X))
+        if (Input.GetButtonDown("PotionHeal") && _potionCount > 0)
         {
-            if (_inputX > 0)
+            if (GetComponent<HealthScript>().getHealth() == 100)
             {
-                _rb.velocity = Vector2.right * _dashSpeed;
+                return;
             }
-            else if (_inputX < 0)
+            soundManager.PlaySound("SFX_DrinkPot");
+            if (GetComponent<HealthScript>().getHealth() > 80)
             {
-                _rb.velocity = Vector2.left * _dashSpeed;
+                GetComponent<HealthScript>().setHealth(100);
 
+            } else
+            {
+                GetComponent<HealthScript>().setHealth(GetComponent<HealthScript>().getHealth() + 20);
+            }
+            _potionCount--;
+            _potionCountText.text = "" + _potionCount;
+            if (_potionCount == 0)
+            {
+                potion.GetComponent<Image>().sprite = potionTextureEmpty;
             }
         }
+    }
+    private void Dash()
+    {
+        //if (Input.GetKeyDown(KeyCode.X))
+        //{
+        //    if (_inputX > 0)
+        //    {
+        //        _rb.velocity = Vector2.right * _dashSpeed;
+        //    }
+        //    else if (_inputX < 0)
+        //    {
+        //        _rb.velocity = Vector2.left * _dashSpeed;
+
+        //    }
+        //}
     }
     private bool isGrounded()
     {
@@ -246,7 +284,6 @@ public class CharacterController2D : MonoBehaviour
     // Animation Events
     private void AE_ResetRoll()
     {
-        // TODO rollda hit yediðinde donma sorunu
         _isRolling = false;
     }
     private void AE_CheckHit()
@@ -256,9 +293,20 @@ public class CharacterController2D : MonoBehaviour
         foreach (Collider2D enemy in hitEnemies)
         {
             enemy.GetComponent<HealthScript>().TakeDamage(_attackDamage);
+            soundManager.PlaySound("SFX_Hit1");
+            GetComponent<HealthScript>().setHealth(GetComponent<HealthScript>().getHealth() + _healthSteal);
         }
     }
-
+    // Sound Functions
+    public void swingSounds(int i)
+    {
+        soundManager.PlaySound("SFX_Swing" + i);
+    }
+    public void runSound()
+    {
+        soundManager.PlaySound("SFX_Walk");
+    }
+    // Gettter Setter
     public bool getFaceRight()
     {
         return _isFaceRight;
@@ -270,7 +318,7 @@ public class CharacterController2D : MonoBehaviour
             _isFaceRight = isFaceRight;
         }
     }
-
+    // Load Save Functions
     public void SavePlayer()
     {
         SaveLoad.SaveData(gameObject, findEnemies(), _camera);
@@ -295,8 +343,11 @@ public class CharacterController2D : MonoBehaviour
     {
         PlayerData data = SaveLoad.LoadData();
         GetComponent<HealthScript>().setHealth(data.health);
-        Vector3 pos = new Vector3(data.position[0], data.position[1], data.position[2]);
         _attackDamage = data.damage;
+        _potionCount = data.potionCount;
+        _potionCountText.text = "" + data.potionCount;
+
+        Vector3 pos = new Vector3(data.position[0], data.position[1], data.position[2]);
         transform.position = pos;
 
         Vector3 campos = new Vector3(data.cameraPos[0], data.cameraPos[1], data.cameraPos[2]);
@@ -325,7 +376,7 @@ public class CharacterController2D : MonoBehaviour
             }
         }
     }
-
+    // In Game Menu 
     public void PauseOrPlayGame(bool comeback)
     {
         if (Input.GetButtonDown("Pause") || comeback)
@@ -342,4 +393,5 @@ public class CharacterController2D : MonoBehaviour
             }
         }
     }
+
 }

@@ -15,6 +15,20 @@ public class SoundManager : MonoBehaviour
     public Sounds[] sounds;
     public static SoundManager instance;
     public AudioSource source;
+    public AudioSource themeAudioSource;
+
+    private void Start()
+    {
+        if (instance != null)
+        {
+            Destroy(gameObject);
+        }
+        else
+        {
+            instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+    }
 
     public void PlaySound(string soundKey)
     {
@@ -33,5 +47,12 @@ public class SoundManager : MonoBehaviour
         }
         return null;
     }
-
+    public void setThemeSoundVolume(float value)
+    {
+        themeAudioSource.volume = value;
+    }
+    public void setEffectSoundVolume(float value)
+    {
+        source.volume = value;
+    }
 }

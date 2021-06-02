@@ -10,9 +10,6 @@ public class MenuScript : MonoBehaviour
     private PlayerData playerData;
     private SoundManager soundManager;
 
-    public AudioSource themeAudioSource;
-    public AudioSource effectAudioSource;
-
     public GameObject[] items;
     public Button continueButton;
     public GameObject mainCanvas, optionsCanvas, newGameCanvas;
@@ -25,7 +22,7 @@ public class MenuScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        soundManager = GetComponent<SoundManager>();
+        soundManager = GameObject.FindGameObjectWithTag("SoundManager").GetComponent<SoundManager>();
         sceneManager = new SceneManagement();
         fullscreenToogle.SetIsOnWithoutNotify(Screen.fullScreen);
 
@@ -92,14 +89,14 @@ public class MenuScript : MonoBehaviour
     public void EffectSoundSliderChanged()
     {
         effectSoundPercentage.text = "%" + (int)soundSlider.value;
-        effectAudioSource.volume = (soundSlider.value / 100);
-        PlayerPrefs.SetFloat("EffectSoundVolume", effectAudioSource.volume);
+        soundManager.setEffectSoundVolume((soundSlider.value / 100));
+        PlayerPrefs.SetFloat("EffectSoundVolume", (soundSlider.value / 100));
     }
     public void ThemeSoundSliderChanged()
     {
         soundPercentage.text = "%" + (int)themeSoundSlider.value;
-        themeAudioSource.volume = (themeSoundSlider.value / 100);
-        PlayerPrefs.SetFloat("ThemeSourceVolume", themeAudioSource.volume);
+        soundManager.setThemeSoundVolume((themeSoundSlider.value / 1000));
+        PlayerPrefs.SetFloat("ThemeSourceVolume", (soundSlider.value / 1000));
     }
 
     private void GetSoundData()

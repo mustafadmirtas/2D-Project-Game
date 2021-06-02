@@ -19,10 +19,12 @@ public class EnemyAttackKnight : MonoBehaviour
     [SerializeField]
     private GameObject enemy;
     private EnemyMovementGround enemyScript;
+    private SoundManager soundManager;
     // Start is called before the first frame update
     void Start()
     {
         enemyScript = enemy.GetComponent<EnemyMovementGround>();
+        soundManager = GameObject.FindGameObjectWithTag("SoundManager").GetComponent<SoundManager>();
     }
 
     // Update is called once per frame
@@ -48,7 +50,15 @@ public class EnemyAttackKnight : MonoBehaviour
 
         foreach (Collider2D enemy in hitEnemies)
         {
-            player.GetComponent<HealthScript>().TakeDamage(_attackDamage);
+            if (!player.GetComponent<CharacterController2D>()._isBlockState || enemyScript.getFaceRight() == player.GetComponent<CharacterController2D>().getFaceRight())
+            {
+                player.GetComponent<HealthScript>().TakeDamage(_attackDamage);
+                soundManager.PlaySound("SFX_Hit3");
+            }
+            else
+            {
+
+            }
         }
     }
     private void OnTriggerStay2D(Collider2D collision)
