@@ -51,21 +51,26 @@ public class MenuScript : MonoBehaviour
             item.SetActive(false);
         }
         newGameCanvas.SetActive(true);
+        
     }
-    public void StartButton()
+    public void StartButton(TMP_Dropdown dropdown)
     {
-
         PlayerPrefs.SetInt("Loaded", 0);
         sceneManager.LoadScene(1);
+        PlayerPrefs.SetInt("Difficulty", dropdown.value);
+        PlayerPrefs.SetInt("CurrentLevel", 1);
         soundManager.PlaySound("SFX_Click");
     }
     public void LoadButton()
     {
         soundManager.PlaySound("SFX_Click");
         playerData = SaveLoad.LoadData();
-        PlayerPrefs.SetInt("Loaded", 1);
+        // When player dies we have to storage data to disable to turn off and on game cheat
+        Debug.Log(PlayerPrefs.GetInt("IsDied", 0));
+        PlayerPrefs.SetInt("Loaded", PlayerPrefs.GetInt("IsDied", 0) == 1 ? 0 : 1);
         sceneManager.LoadScene(playerData.level);
     }
+
     public void OptionsButton()
     {
         soundManager.PlaySound("SFX_Click");
@@ -76,6 +81,11 @@ public class MenuScript : MonoBehaviour
         optionsCanvas.SetActive(true);
     }
 
+    public void RestartLevel()
+    {
+        PlayerPrefs.SetInt("Loaded", 0);
+        sceneManager.LoadScene(PlayerPrefs.GetInt("CurrentLevel", 1));
+    }
     public void ReturnToMainMenu()
     {
         sceneManager.LoadScene(0);

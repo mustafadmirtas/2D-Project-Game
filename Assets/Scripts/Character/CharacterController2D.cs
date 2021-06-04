@@ -40,13 +40,22 @@ public class CharacterController2D : MonoBehaviour
     private SoundManager soundManager;
     public GameObject inGameCanvas;
 
-    [Header("Potion")]
+    [Header("Potion and Hearts")]
     public int _potionCount = 3;
     public TextMeshProUGUI _potionCountText;
     public Sprite potionTextureEmpty;
     public Sprite potionTextureFill;
     public GameObject potion;
-    
+    public GameObject[] hearts;
+
+    [Header("GameOverCanvas")]
+    public int _healthCount = 3;
+    public TextMeshProUGUI changeText;
+    public Button continueButton;
+    public Button restartLevelButton;
+    public GameObject gameOverCanvas;
+    public GameObject[] canvasGameObjects;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -56,10 +65,16 @@ public class CharacterController2D : MonoBehaviour
         _groundLayerMask = LayerMask.GetMask("Ground");
         if (PlayerPrefs.GetInt("Loaded") == 1)
         {
-            LoadPlayer();
+            LoadPlayer(false);
         }
-        _potionCountText.text = ""+_potionCount;
+        else
+        {
+            LoadPlayer(true);
+        }
+        _potionCountText.text = "" + _potionCount;
         soundManager = GameObject.FindGameObjectWithTag("SoundManager").GetComponent<SoundManager>();
+
+
     }
 
     // Update is called once per frame
@@ -182,7 +197,8 @@ public class CharacterController2D : MonoBehaviour
             {
                 GetComponent<HealthScript>().setHealth(100);
 
-            } else
+            }
+            else
             {
                 GetComponent<HealthScript>().setHealth(GetComponent<HealthScript>().getHealth() + 20);
             }
@@ -319,14 +335,53 @@ public class CharacterController2D : MonoBehaviour
         }
     }
     // Load Save Functions
+    public void LoadDifficulty(PlayerData data)
+    {
+        if (PlayerPrefs.GetInt("Difficulty") == 0)
+        {
+            _healthCount = PlayerPrefs.GetInt("Loaded") == 1 ? data.healthCount : 3;
+        }
+        else if (PlayerPrefs.GetInt("Difficulty") == 1)
+        {
+            _healthCount = PlayerPrefs.GetInt("Loaded") == 1 ? (data.healthCount > 1 ? 1 : data.healthCount) : 1;
+        }
+        else
+        {
+            _healthCount = 0;
+        }
+
+        for (int i = 0; i < hearts.Length; i++)
+        {
+            if (_healthCount > i)
+            {
+                hearts[i].SetActive(true);
+            }
+            else
+            {
+                hearts[i].SetActive(false);
+            }
+        }
+    }
     public void SavePlayer()
     {
+        SaveLoad.SaveData(gameObject, findEnemies(), _camera);
+    }
+    private void SaveDataWhenDied()
+    {
+        PlayerData data = SaveLoad.LoadData();
+        _potionCount = data.potionCount;
+
+        Vector3 pos = new Vector3(data.position[0], data.position[1], data.position[2]);
+        transform.position = pos;
+
+        Vector3 campos = new Vector3(data.cameraPos[0], data.cameraPos[1], data.cameraPos[2]);
+        _camera.transform.position = campos;
+        LoadEnemies(data);
         SaveLoad.SaveData(gameObject, findEnemies(), _camera);
     }
 
     private List<GameObject> findEnemies()
     {
-
         gos = Resources.FindObjectsOfTypeAll(typeof(GameObject)) as GameObject[];
         goList = new List<GameObject>();
         foreach (GameObject go in gos)
@@ -339,27 +394,68 @@ public class CharacterController2D : MonoBehaviour
         return goList;
     }
 
-    public void LoadPlayer()
+    public void LoadPlayer(bool isFirstLevelStart)
     {
         PlayerData data = SaveLoad.LoadData();
-        GetComponent<HealthScript>().setHealth(data.health);
-        _attackDamage = data.damage;
-        _potionCount = data.potionCount;
-        _potionCountText.text = "" + data.potionCount;
+        if (data == null || isFirstLevelStart)
+        {
+            SavePlayer();
+            LoadDifficulty(data);
+        }
+        else
+        {
+            GetComponent<HealthScript>().setHealth(data.health);
+            _attackDamage = data.damage;
+            _potionCount = data.potionCount;
+            _potionCountText.text = "" + data.potionCount;
+            _healthCount = data.healthCount;
 
-        Vector3 pos = new Vector3(data.position[0], data.position[1], data.position[2]);
-        transform.position = pos;
+            if (!isFirstLevelStart)
+            {
+                Vector3 pos = new Vector3(data.position[0], data.position[1], data.position[2]);
+                transform.position = pos;
 
-        Vector3 campos = new Vector3(data.cameraPos[0], data.cameraPos[1], data.cameraPos[2]);
-        _camera.transform.position = campos;
-        LoadEnemies(data);
+                Vector3 campos = new Vector3(data.cameraPos[0], data.cameraPos[1], data.cameraPos[2]);
+                _camera.transform.position = campos;
+                LoadEnemies(data);
+            }
+            LoadDifficulty(data);
+        }
+
         PauseOrPlayGame(true);
+    }
+
+    private void Continue()
+    {
+        inGameCanvas.SetActive(true);
+        gameOverCanvas.SetActive(true);
+        foreach (GameObject item in canvasGameObjects)
+        {
+            item.SetActive(false);
+        }
+        Time.timeScale = 0;
+        if (_healthCount > 0)
+        {
+            changeText.text = "You have " + _healthCount + " MORE CHANCE" + (_healthCount > 1 ? "S" : "");
+            continueButton.gameObject.SetActive(true);
+            restartLevelButton.gameObject.SetActive(false);
+            PlayerPrefs.SetInt("IsDied", 0);
+            _healthCount--;
+            GetComponent<HealthScript>().setHealth(100);
+            SaveDataWhenDied();
+        }
+        else
+        {
+            PlayerPrefs.SetInt("IsDied", 1);
+            changeText.text = "GAME OVER TRY AGAIN";
+            continueButton.gameObject.SetActive(false);
+            restartLevelButton.gameObject.SetActive(true);
+        }
     }
 
     private void LoadEnemies(PlayerData data)
     {
         List<GameObject> enemies = findEnemies();
-        Debug.Log(enemies.Count);
 
         for (int i = 0; i < enemies.Count; i++)
         {
@@ -381,7 +477,7 @@ public class CharacterController2D : MonoBehaviour
     {
         if (Input.GetButtonDown("Pause") || comeback)
         {
-            if (inGameCanvas.activeSelf == true)
+            if (inGameCanvas.activeSelf == true || comeback)
             {
                 inGameCanvas.SetActive(false);
                 Time.timeScale = 1;
@@ -389,6 +485,10 @@ public class CharacterController2D : MonoBehaviour
             else
             {
                 inGameCanvas.SetActive(true);
+                foreach (GameObject item in canvasGameObjects)
+                {
+                    item.SetActive(true);
+                }
                 Time.timeScale = 0;
             }
         }

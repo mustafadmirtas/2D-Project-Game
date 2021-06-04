@@ -9,7 +9,7 @@ public static class SaveLoad
     public static void SaveData(GameObject ch, List<GameObject> enemies, GameObject camera)
     {
         BinaryFormatter formatter = new BinaryFormatter();
-        string path = Application.persistentDataPath + "/savedata";
+        string path = Application.persistentDataPath + "/savedata6";
         FileStream stream = new FileStream(path, FileMode.Create);
 
         PlayerData data = new PlayerData(ch, enemies, camera);
@@ -20,7 +20,7 @@ public static class SaveLoad
 
     public static PlayerData LoadData()
     {
-        string path = Application.persistentDataPath + "/savedata";
+        string path = Application.persistentDataPath + "/savedata6";
         if (File.Exists(path))
         {
             BinaryFormatter formatter = new BinaryFormatter();

@@ -13,7 +13,6 @@ public class HealthScript : MonoBehaviour
     public GameObject healtBarPos;
     public GameObject healthBar;
 
-    private bool _isBlockState = false;
     void Start()
     {
         _currentHealth = _maxHealth;
@@ -37,8 +36,13 @@ public class HealthScript : MonoBehaviour
             slider.value = _currentHealth;
         }
         _animator.SetTrigger("Hit");
+
         if (_currentHealth <= 0)
         {
+            if (gameObject.tag == "Player")
+            {
+                BroadcastMessage("Continue");
+            }
             Die();
         }
     }
