@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class ArrowScript : MonoBehaviour
 {
-    public int _attackDamage = 5;
+    public int _attackDamage = 10;
 
     private SoundManager soundManager;
     private void Start()

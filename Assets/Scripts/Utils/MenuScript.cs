@@ -35,6 +35,7 @@ public class MenuScript : MonoBehaviour
             continueButton.image.enabled = false;
             continueButton.GetComponentInChildren<TextMeshProUGUI>().color = Color.gray;
         }
+        PlayerPrefs.SetInt("IsDied", 0);
     }
 
     // Update is called once per frame
@@ -65,8 +66,7 @@ public class MenuScript : MonoBehaviour
     {
         soundManager.PlaySound("SFX_Click");
         playerData = SaveLoad.LoadData();
-        // When player dies we have to storage data to disable to turn off and on game cheat
-        Debug.Log(PlayerPrefs.GetInt("IsDied", 0));
+        // When player dies we have to storage data to disable to turn off and on game cheat        
         PlayerPrefs.SetInt("Loaded", PlayerPrefs.GetInt("IsDied", 0) == 1 ? 0 : 1);
         sceneManager.LoadScene(playerData.level);
     }

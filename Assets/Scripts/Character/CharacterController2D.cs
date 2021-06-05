@@ -8,6 +8,7 @@ public class CharacterController2D : MonoBehaviour
 {
     [SerializeField]
     private LayerMask _groundLayerMask;
+    public LayerMask _sideLayerMask;
     Rigidbody2D _rb;
     CapsuleCollider2D _capsuleCollider2D;
     public Vector2 _speed = new Vector2(1, 1);
@@ -25,6 +26,8 @@ public class CharacterController2D : MonoBehaviour
     private bool _isClimbing = false;
     public bool _isBlockState = false;
     public int _healthSteal = 0;
+    private string _lastWallName;
+    public bool _isWallJumped = false;
 
     [Header("Attack Settings")]
     public Transform _attackPoint;
@@ -229,7 +232,7 @@ public class CharacterController2D : MonoBehaviour
     {
         float extraHeightText = 0.2f;
         RaycastHit2D raycastHit = Physics2D.BoxCast(_capsuleCollider2D.bounds.center, _capsuleCollider2D.bounds.size, 0f, Vector2.down, extraHeightText, _groundLayerMask);
-        RaycastHit2D grabCastHit = Physics2D.BoxCast(_capsuleCollider2D.bounds.center, _capsuleCollider2D.bounds.size, _isFaceRight ? 90f : -90f, Vector2.left, extraHeightText, _groundLayerMask);
+        RaycastHit2D grabCastHit = Physics2D.BoxCast(_capsuleCollider2D.bounds.center, _capsuleCollider2D.bounds.size, _isFaceRight ? 90f : -90f, Vector2.left, extraHeightText, _sideLayerMask);
         Color rayColor;
         if (raycastHit.collider != null || grabCastHit.collider != null)
         {
@@ -239,16 +242,7 @@ public class CharacterController2D : MonoBehaviour
         {
             rayColor = Color.red;
         }
-
-        if (grabCastHit.collider != null)
-        {
-            _isGrabbing = true;
-        }
-        else
-        {
-            _isGrabbing = false;
-        }
-
+        // TODO WALL JUMP
         Debug.DrawRay(_capsuleCollider2D.bounds.center, new Vector3(_isFaceRight ? .75f : -.75f, 0, 0), rayColor);
         Debug.DrawRay(_capsuleCollider2D.bounds.center + new Vector3(_capsuleCollider2D.bounds.extents.x, 0), Vector2.down * (_capsuleCollider2D.bounds.extents.y + extraHeightText), rayColor);
         Debug.DrawRay(_capsuleCollider2D.bounds.center - new Vector3(_capsuleCollider2D.bounds.extents.x, 0), Vector2.down * (_capsuleCollider2D.bounds.extents.y + extraHeightText), rayColor);
@@ -256,12 +250,13 @@ public class CharacterController2D : MonoBehaviour
         if (raycastHit.collider != null && Mathf.Abs(_rb.velocity.y) == 0)
         {
             _animator.SetBool("Grounded", true);
+            _lastWallName = null;
         }
         else
         {
             _animator.SetBool("Grounded", false);
         }
-        return (raycastHit.collider != null || grabCastHit.collider != null);
+        return (raycastHit.collider != null);
     }
     public void isClimb(bool climbing)
     {

@@ -36,7 +36,7 @@ public class EnemyAttackKnight : MonoBehaviour
     private void Attack()
     {
         // attack animation
-        if (_timeSinceAttack > 1f)
+        if (_timeSinceAttack > 1f && GetComponent<HealthScript>().enabled)
         {
             _animator.SetTrigger("attackEnemy");
             // Reset timer
@@ -60,6 +60,10 @@ public class EnemyAttackKnight : MonoBehaviour
 
             }
         }
+    }
+    private void AE_FixDeathAnimation()
+    {
+        transform.position = new Vector2(transform.position.x, transform.position.y - 0.50f);
     }
     private void OnTriggerStay2D(Collider2D collision)
     {
