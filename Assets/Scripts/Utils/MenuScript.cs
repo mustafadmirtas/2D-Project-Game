@@ -27,7 +27,6 @@ public class MenuScript : MonoBehaviour
         fullscreenToogle.SetIsOnWithoutNotify(Screen.fullScreen);
 
         GetSoundData();
-
         playerData = SaveLoad.LoadData();
         if (playerData == null)
         {
@@ -68,7 +67,7 @@ public class MenuScript : MonoBehaviour
         playerData = SaveLoad.LoadData();
         // When player dies we have to storage data to disable to turn off and on game cheat        
         PlayerPrefs.SetInt("Loaded", PlayerPrefs.GetInt("IsDied", 0) == 1 ? 0 : 1);
-        sceneManager.LoadScene(playerData.level);
+        sceneManager.LoadScene(PlayerPrefs.GetInt("CurrentLevel", 1));
     }
 
     public void OptionsButton()

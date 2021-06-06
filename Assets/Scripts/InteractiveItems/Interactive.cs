@@ -27,12 +27,14 @@ public class Interactive : MonoBehaviour
             {
                 GetComponent<SpriteRenderer>().sprite = closedButton;
                 door.GetComponent<SpriteRenderer>().sprite = closedDoor;
+                door.GetComponent<LevelFinish>()._isFinishable = false;
                 isOpened = false;
             }
             else
             {
                 GetComponent<SpriteRenderer>().sprite = openedButton;
                 door.GetComponent<SpriteRenderer>().sprite = openedDoor;
+                door.GetComponent<LevelFinish>()._isFinishable = true;
                 isOpened = true;
             }
         }

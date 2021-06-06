@@ -19,8 +19,6 @@ public class PlayerData
     public List<float[]> enemyPos = new List<float[]>();
     public List<bool> enemyEnabled = new List<bool>();
 
-
-
     public PlayerData(GameObject character, List<GameObject> enemies, GameObject camera)
     {
         health = character.GetComponent<HealthScript>().getHealth();
