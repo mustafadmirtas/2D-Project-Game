@@ -10,7 +10,7 @@ public class EnemyBossAttack : MonoBehaviour
     public Transform _attackPoint;
     public float _attackRange = 0.5f;
     public LayerMask _playerLayer;
-    public int _attackDamage = 10;
+    public int _attackDamage = 20;
     public float _jumpAttackRange = 4f;
     public float _jumpAttackRangeMin = 2f;
 
@@ -106,7 +106,6 @@ public class EnemyBossAttack : MonoBehaviour
             if (!player.GetComponent<CharacterController2D>()._isBlockState || enemyScript.getFaceRight() == player.GetComponent<CharacterController2D>().getFaceRight())
             {
                 player.GetComponent<HealthScript>().TakeDamage(_attackDamage);
-                soundManager.PlaySound("SFX_Hit3");
             } else
             {
 

@@ -39,7 +39,7 @@ public class EnemyAttackArcher : MonoBehaviour
     {
         enemyScript.LookPlayer();
         // attack animation
-        if (_timeSinceAttack > 2f && enemyScript.getChasing())
+        if (_timeSinceAttack > 1f && enemyScript.getChasing())
         {
             RaycastHit2D[] hit = Physics2D.RaycastAll(new Vector2(transform.position.x + (enemyScript.getFaceRight() ? 0.1f : -0.1f), transform.position.y), (enemyScript.getFaceRight() ? Vector2.right : Vector2.left), 10f);
             Debug.DrawRay(new Vector2(transform.position.x + (enemyScript.getFaceRight() ? 0.1f : -0.1f), transform.position.y - 0.3f), (enemyScript.getFaceRight() ? Vector2.right : Vector2.left) * 10f, Color.green);

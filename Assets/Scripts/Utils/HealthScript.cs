@@ -13,10 +13,11 @@ public class HealthScript : MonoBehaviour
     public GameObject healtBarPos;
     public GameObject healthBar;
 
+    private SoundManager soundManager;
     void Start()
     {
         _currentHealth = _maxHealth;
-
+        soundManager = GameObject.FindGameObjectWithTag("SoundManager").GetComponent<SoundManager>();
     }
     private void Update()
     {
@@ -31,6 +32,10 @@ public class HealthScript : MonoBehaviour
     {
         // Takes Damage
         _currentHealth -= damage;
+        if (gameObject.tag == "Player")
+        {
+            soundManager.PlaySound("SFX_Hit3");
+        }
         if (slider != null)
         {
             slider.value = _currentHealth;

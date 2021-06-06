@@ -53,7 +53,6 @@ public class EnemyAttackKnight : MonoBehaviour
             if (!player.GetComponent<CharacterController2D>()._isBlockState || enemyScript.getFaceRight() == player.GetComponent<CharacterController2D>().getFaceRight())
             {
                 player.GetComponent<HealthScript>().TakeDamage(_attackDamage);
-                soundManager.PlaySound("SFX_Hit3");
             }
             else
             {

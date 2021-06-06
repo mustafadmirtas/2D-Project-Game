@@ -17,7 +17,6 @@ public class ArrowScript : MonoBehaviour
         if (collision.gameObject.layer == 9)
         {
             collision.gameObject.GetComponent<HealthScript>().TakeDamage(_attackDamage);
-            soundManager.PlaySound("SFX_Hit3");
             Destroy(gameObject);
         } else if (collision.gameObject.layer == 6)
         {
