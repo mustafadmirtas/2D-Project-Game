@@ -4060,6 +4060,22 @@ PrefabInstance:
       propertyPath: effectAudioSource
       value: 
       objectReference: {fileID: 1237957384}
+    - target: {fileID: 6240617843821555982, guid: 5c41967cb093fcb42837c99d205f16aa, type: 3}
+      propertyPath: m_UiScaleMode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6240617843821555982, guid: 5c41967cb093fcb42837c99d205f16aa, type: 3}
+      propertyPath: m_ReferenceResolution.x
+      value: 1920
+      objectReference: {fileID: 0}
+    - target: {fileID: 6240617843821555982, guid: 5c41967cb093fcb42837c99d205f16aa, type: 3}
+      propertyPath: m_ReferenceResolution.y
+      value: 1080
+      objectReference: {fileID: 0}
+    - target: {fileID: 6240617843821555983, guid: 5c41967cb093fcb42837c99d205f16aa, type: 3}
+      propertyPath: m_RenderMode
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6240617844351556396, guid: 5c41967cb093fcb42837c99d205f16aa, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
       value: 2
