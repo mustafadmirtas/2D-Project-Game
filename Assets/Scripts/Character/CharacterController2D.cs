@@ -62,10 +62,13 @@ public class CharacterController2D : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        
         _rb = GetComponent<Rigidbody2D>();
         _animator = GetComponent<Animator>();
         _capsuleCollider2D = GetComponent<CapsuleCollider2D>();
         _groundLayerMask = LayerMask.GetMask("Ground");
+
+        // if player has save load save
         if (PlayerPrefs.GetInt("Loaded") == 1)
         {
             LoadPlayer(false);
@@ -74,10 +77,9 @@ public class CharacterController2D : MonoBehaviour
         {
             LoadPlayer(true);
         }
+
         _potionCountText.text = "" + _potionCount;
         soundManager = GameObject.FindGameObjectWithTag("SoundManager").GetComponent<SoundManager>();
-
-
     }
 
     // Update is called once per frame
@@ -105,10 +107,13 @@ public class CharacterController2D : MonoBehaviour
         //taking input from user
         _inputX = Input.GetAxis("Horizontal");
 
+        
         if (isGrounded())
         {
+            // run animation control
             _animator.SetFloat("speedX", Mathf.Abs(_inputX));
         }
+        // on air animation
         _animator.SetFloat("AirSpeedY", _rb.velocity.y);
         if (_inputX != 0 && !_isRolling && !_isBlockState)
         {
@@ -232,6 +237,8 @@ public class CharacterController2D : MonoBehaviour
     {
         float extraHeightText = 0.2f;
         RaycastHit2D raycastHit = Physics2D.BoxCast(_capsuleCollider2D.bounds.center, _capsuleCollider2D.bounds.size, 0f, Vector2.down, extraHeightText, _groundLayerMask);
+
+        // TODO WALL JUMP
         RaycastHit2D grabCastHit = Physics2D.BoxCast(_capsuleCollider2D.bounds.center, _capsuleCollider2D.bounds.size, _isFaceRight ? 90f : -90f, Vector2.left, extraHeightText, _sideLayerMask);
         Color rayColor;
         if (raycastHit.collider != null || grabCastHit.collider != null)
@@ -250,7 +257,6 @@ public class CharacterController2D : MonoBehaviour
         if (raycastHit.collider != null && Mathf.Abs(_rb.velocity.y) == 0)
         {
             _animator.SetBool("Grounded", true);
-            _lastWallName = null;
         }
         else
         {
@@ -283,6 +289,7 @@ public class CharacterController2D : MonoBehaviour
             transform.Translate(movement);
         }
     }
+
     private void OnDrawGizmosSelected()
     {
         // for seeing sphere which gives damage
@@ -305,6 +312,8 @@ public class CharacterController2D : MonoBehaviour
         {
             enemy.GetComponent<HealthScript>().TakeDamage(_attackDamage);
             soundManager.PlaySound("SFX_Hit1");
+
+            // If player choose health steal
             GetComponent<HealthScript>().setHealth(GetComponent<HealthScript>().getHealth() + _healthSteal);
         }
     }
@@ -377,6 +386,7 @@ public class CharacterController2D : MonoBehaviour
 
     private List<GameObject> findEnemies()
     {
+        // Find Enemies on the scene return them 
         gos = Resources.FindObjectsOfTypeAll(typeof(GameObject)) as GameObject[];
         goList = new List<GameObject>();
         foreach (GameObject go in gos)

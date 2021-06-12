@@ -76,6 +76,7 @@ public class EnemyBossAttack : MonoBehaviour
     //{
     //    _isDogding = false;
     //}
+
     private void Attack()
     {
         // attack animation
@@ -106,9 +107,6 @@ public class EnemyBossAttack : MonoBehaviour
             if (!player.GetComponent<CharacterController2D>()._isBlockState || enemyScript.getFaceRight() == player.GetComponent<CharacterController2D>().getFaceRight())
             {
                 player.GetComponent<HealthScript>().TakeDamage(_attackDamage);
-            } else
-            {
-
             }
         }
     }

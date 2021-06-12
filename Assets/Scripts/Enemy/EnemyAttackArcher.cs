@@ -68,9 +68,10 @@ public class EnemyAttackArcher : MonoBehaviour
         GameObject arrow = Instantiate(_arrow, new Vector2(x, y), Quaternion.identity);
         arrow.transform.localScale = new Vector3(enemyScript.getFaceRight() ? 0.1f : -0.1f, 0.1f, 0.1f);
         arrow.GetComponent<Rigidbody2D>().velocity = new Vector2(enemyScript.getFaceRight() ? _arrowSpeed : -_arrowSpeed, 0f);
-
+        arrow.GetComponent<ArrowScript>()._isFaceRight = enemyScript.getFaceRight();
     }
 
+    // TODO another archer who can attack near
     private void AE_CheckHit()
     {
         Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(_attackPoint.position, _attackRange, _playerLayer);

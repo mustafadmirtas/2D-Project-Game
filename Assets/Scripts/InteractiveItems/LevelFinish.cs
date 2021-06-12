@@ -5,7 +5,7 @@ using UnityEngine;
 public class LevelFinish : MonoBehaviour
 {
     public GameObject playerHero;
-    public bool _isFinishable;
+    public bool _isFinishable = false;
     private bool playerOnRange;
     public GameObject e_key;
     private PlayerData playerData;
@@ -25,18 +25,17 @@ public class LevelFinish : MonoBehaviour
 
     private void NextLevel()
     {
-        if (Input.GetButtonDown("Interaction") && playerOnRange)
+        if (Input.GetButtonDown("Interaction") && playerOnRange && _isFinishable)
         {
-            playerData = SaveLoad.LoadData();
-            // When player dies we have to storage data to disable to turn off and on game cheat        
-            PlayerPrefs.SetInt("Loaded", PlayerPrefs.GetInt("IsDied", 0) == 1 ? 0 : 1);
+            playerData = SaveLoad.LoadData();  
+            PlayerPrefs.SetInt("Loaded", 0);
             PlayerPrefs.SetInt("CurrentLevel", PlayerPrefs.GetInt("CurrentLevel", 1) + 1);
             sceneManager.LoadScene(PlayerPrefs.GetInt("CurrentLevel", 1));
         }
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.tag == "Player")
+        if (collision.gameObject.tag == "Player" && _isFinishable)
         {
             e_key.SetActive(true);
             playerOnRange = true;
@@ -44,7 +43,7 @@ public class LevelFinish : MonoBehaviour
     }
     private void OnTriggerStay2D(Collider2D collision)
     {
-        if (collision.gameObject.tag == "Player")
+        if (collision.gameObject.tag == "Player" && _isFinishable)
         {
             playerOnRange = true;
             e_key.SetActive(true);

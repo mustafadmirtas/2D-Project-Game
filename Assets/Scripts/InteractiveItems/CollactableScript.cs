@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class CollactableScript : MonoBehaviour
 {
@@ -20,6 +21,7 @@ public class CollactableScript : MonoBehaviour
         {
             playerHero.GetComponent<CharacterController2D>()._potionCount += 1;
             playerHero.GetComponent<CharacterController2D>()._potionCountText.text = "" + playerHero.GetComponent<CharacterController2D>()._potionCount;
+            playerHero.GetComponent<CharacterController2D>().potion.GetComponent<Image>().sprite = playerHero.GetComponent<CharacterController2D>().potionTextureFill;
             Destroy(gameObject);
         }
     }

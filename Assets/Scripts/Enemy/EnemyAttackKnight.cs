@@ -54,10 +54,6 @@ public class EnemyAttackKnight : MonoBehaviour
             {
                 player.GetComponent<HealthScript>().TakeDamage(_attackDamage);
             }
-            else
-            {
-
-            }
         }
     }
     private void AE_FixDeathAnimation()

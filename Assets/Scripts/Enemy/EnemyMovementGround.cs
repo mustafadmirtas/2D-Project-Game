@@ -26,7 +26,6 @@ public class EnemyMovementGround : MonoBehaviour
         _rb = GetComponent<Rigidbody2D>();
     }
 
-
     // Update is called once per frame
     void Update()
     {
@@ -59,6 +58,7 @@ public class EnemyMovementGround : MonoBehaviour
 
     public void Chase()
     {
+        // follow the player
         if (!_isAttacking && !_isTakingHit && _isChasing && (transform.position.x != player.transform.position.x) && !_isNoWayToGo)
         {
             _rb.velocity = new Vector2(0, 0);
@@ -92,6 +92,7 @@ public class EnemyMovementGround : MonoBehaviour
 
     public void StartChase()
     {
+        // if line detect player start chase
         if (!_isChasing)
         {
             RaycastHit2D hit = Physics2D.Raycast(new Vector2(transform.position.x + (_isFaceRight ? 1f : -1f), transform.position.y), (_isFaceRight ? Vector2.right : Vector2.left), 10f);
@@ -125,7 +126,6 @@ public class EnemyMovementGround : MonoBehaviour
         if (enabled)
         {
             _rb.velocity = new Vector2(0, 0);
-
         }
     }
     public void AE_AttackFinished()

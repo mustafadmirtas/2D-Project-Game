@@ -23,6 +23,7 @@ public class HealthScript : MonoBehaviour
     {
         if (gameObject.layer != 9)
         {
+            // for enemy healthbar position set
             Vector3 wantedPos = Camera.main.WorldToScreenPoint(healtBarPos.transform.position);
             slider.transform.position = wantedPos;
         }
